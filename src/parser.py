@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from src.my_exeption import RequestErrorException
 
-import json
 import requests
+import json
 
 
 class Parser(ABC):
@@ -41,9 +41,8 @@ class HH(Parser):
         self.url_area = 'https://api.hh.ru/suggests/areas'
         self.url = 'https://api.hh.ru/vacancies'
         self.params = {"text": "",
-                       #"salary": 0,
-                       #"only_with_salary": "true",
                        'area': '',
+                       'period': 7,
                        "page": 0, "per_page": 100}
         self.__vacancies = []
         super().__init__(file_worker)
@@ -61,44 +60,43 @@ class HH(Parser):
             vacancies_lst.append(vacancy)
         return vacancies_lst
 
-    def save_data_in_file(self, file):
-        with open(file, 'w', encoding='utf-8') as f:
-            json.dump(self.__vacancies, f, ensure_ascii=False, indent=4)
+    def save_list_in_file(self):
+        with open(self.file_worker, 'w', encoding='utf-8') as f:
+            json.dump(self.vacancies, f, ensure_ascii=False, indent=4)
 
-    def get_region(self, region_name):
+    def get_region_lst(self, region_name):
         param = {"text": region_name}
         response = requests.get(self.url_area, param)
         #print(response.status_code)
         #print(response.json())
-        area_id = response.json()['items']
-        return area_id
+        area_lst = response.json()['items']
+        return area_lst
 
     def load_vacancies(self, keywords):
-        area_lst = self.get_region(keywords['region'])
-        #print(area_lst)
+        found = 'Что-то пошло не так!'
         self.params['text'] = keywords['vacancy']
-        if keywords['salary_from'] != 0:
-            self.params['salary'] = keywords['salary_from']
-        for area in area_lst:
-            pages = 1
-            self.params['page'] = 0
-            print(area, "***", area['id'])
-            self.params['area'] = area['id']
-            while self.params['page'] <= pages:
-                print(self.params)
-                response = requests.get(self.url, self.params)
-                if response.status_code == 200:
-                    found = response.json()['found']
-                    page = response.json()['page']
-                    per_page = response.json()['per_page']
-                    pages = response.json()['pages']
-                    print(f'found {found}, page {page}, pages {pages}, per_page {per_page}')
-                    if pages >= 20:
-                        pages = 19
-                    vacancies = response.json()['items']
-                    self.__vacancies.extend(vacancies)
-                    self.params['page'] = page + 1
-                else:
-                    # print(response.status_code)
-                    # print(response.json())
-                    raise RequestErrorException(f"**{response.status_code}, **{response.json()}")
+        if keywords['salary'] != 0:
+            self.params['salary'] = keywords['salary']
+        pages = 1
+        self.params['area'] = keywords['region']
+        self.params['page'] = 0
+        while self.params['page'] < pages:
+            #print(self.params)
+            response = requests.get(self.url, self.params)
+            #print(response.json())
+            if response.status_code == 200:
+                found = response.json()['found']
+                page = response.json()['page']
+                per_page = response.json()['per_page']
+                pages = response.json()['pages']
+                #print(f'found {found}, page {page}, pages {pages}, per_page {per_page}')
+                if pages >= 20:
+                    pages = 20
+                vacancies = response.json()['items']
+                self.__vacancies.extend(vacancies)
+                self.params['page'] = page + 1
+            else:
+                # print(response.status_code)
+                # print(response.json())
+                raise RequestErrorException(f"**{response.status_code}, **{response.json()}")
+        return f"Найдено вакансий по запросу: {found}"

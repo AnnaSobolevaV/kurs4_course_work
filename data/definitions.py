@@ -2,21 +2,27 @@ import os
 
 DATA_PATH = os.path.abspath('data')
 file_worker_hh = os.path.join(DATA_PATH, 'file_worker_hh.json')
-file_json = os.path.join(DATA_PATH, 'vacancies.json')
-file_txt = os.path.join(DATA_PATH, 'vacancies.txt')
-file_csv = os.path.join(DATA_PATH, 'vacancies.csv')
-user_choice_default = {'region': 'Москва', 'vacancy': 'Python'}
+user_file_json = os.path.join(DATA_PATH, 'vacancies.json')
+user_file_txt = os.path.join(DATA_PATH, 'vacancies.txt')
+user_file_csv = os.path.join(DATA_PATH, 'vacancies.csv')
+user_choice_default = {'region': 'Мурманск', 'vacancy': 'менеджер по продажам'}
 strings_for_print = {
     "to_start": "Добро пожаловать на наш сервис!\nБыстро и удобно поможем найти лучшую для Вас работу.",
     "request_site": "Выберете сайт для поиска вакансии (введите 1, 2 или 3):\n1. hh.ru\n2. rabota.ru\n3. avito.ru",
-    "request_region": "Введите регион: (пример: Санкт-Петербург, Москва, Саратовская область,...)",
+    "request_region": "Введите регион: (пример: Мурманск, Санкт-Петербург, Саратовская область,...)",
     "request_vacancy": "Введите интересующую Вас вакансию: (пример: менеджер по продажам)",
     "request_salary": "Введите ожидаемую зарплату - от: (пример: 50000), либо 0, если зарплата может быть любой",
     "request_waiting": "Ваш запрос обрабатывается",
-    "execution_phase": "Введите 0, 1, 2 или 3:\n0: закончить программу\n1: отправить запрос\n2: добавить результат "
-                       "запроса в файл\n3: удалить вакансию из файла""",
+    "execution_phase": "Введите 0, 1, 2, 3 или 4:\n0: закончить программу\n1: отправить запрос\n2: вывести на экран N "
+                       "вакансий\n3: добавить результат в файл\n4: удалить вакансии из файла""",
+    "execution_phase_start": "Введите 0 или 1:\n0: закончить программу\n1: отправить запрос""",
+    "top_n_vacancy": "Введите количество вакансий, которые необходимо вывести на экран: ",
+    "only_with_salary": "Введите 1, чтобы получить N вакансий ранжированных по зарплате\n"
+                        " или 0, чтобы вывести N вакансий, в которых зарплата не указана",
+    "": "",
     "choice": "Ваш выбор: ",
     "error_input": "Некорректный ввод, попробуйте еще раз",
     "add_vacancy": "Выберете формат файла, в котором необходимо сохранить данные:\n1. .json\n2. .txt\n3. .csv",
+    "add_vacancy_rewrite": "Введите 1, если файл надо перезаписать данными или 0, если данные нужно добавить в файл",
     "del_vacancy": "Введите id вакансии, которую необходимо удалить: "
     }
