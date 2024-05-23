@@ -6,6 +6,10 @@ import json
 
 
 class Parser(ABC):
+    """
+    Абстрактный класс для работы с API различных сайтов по поиску вакансий
+    """
+
     def __init__(self, file_worker):
         self.file_worker = file_worker
 
@@ -36,8 +40,11 @@ class HH(Parser):
     """
     Класс для работы с API HeadHunter
     """
+    id = 0
 
     def __init__(self, file_worker):
+        HH.id += 1
+        self.id = 'queryHH_' + str(HH.id)
         self.url_area = 'https://api.hh.ru/suggests/areas'
         self.url = 'https://api.hh.ru/vacancies'
         self.params = {"text": "",
@@ -67,8 +74,6 @@ class HH(Parser):
     def get_region_lst(self, region_name):
         param = {"text": region_name}
         response = requests.get(self.url_area, param)
-        #print(response.status_code)
-        #print(response.json())
         area_lst = response.json()['items']
         return area_lst
 
@@ -81,22 +86,17 @@ class HH(Parser):
         self.params['area'] = keywords['region']
         self.params['page'] = 0
         while self.params['page'] < pages:
-            #print(self.params)
             response = requests.get(self.url, self.params)
-            #print(response.json())
             if response.status_code == 200:
                 found = response.json()['found']
                 page = response.json()['page']
                 per_page = response.json()['per_page']
                 pages = response.json()['pages']
-                #print(f'found {found}, page {page}, pages {pages}, per_page {per_page}')
                 if pages >= 20:
                     pages = 20
                 vacancies = response.json()['items']
                 self.__vacancies.extend(vacancies)
                 self.params['page'] = page + 1
             else:
-                # print(response.status_code)
-                # print(response.json())
                 raise RequestErrorException(f"**{response.status_code}, **{response.json()}")
         return f"Найдено вакансий по запросу: {found}"

@@ -1,16 +1,17 @@
-from src.my_exeption import CompareErrorException
-from operator import itemgetter, attrgetter
-
 
 class Vacancy:
+    """
+    Класс для работы с вакансиями
+    """
+
     id = 0
     vacancy_lists = {'without_salary': [], 'with_salary_to': {'до вычета налогов': {}, 'на руки': {}},
                      'with_salary_from': {'до вычета налогов': {}, 'на руки': {}}}
 
-    def __init__(self, name, employer, area, salary, snippet, schedule, professional_roles, experience,
+    def __init__(self, query_id, name, employer, area, salary, snippet, schedule, professional_roles, experience,
                  date, type_vac):
         Vacancy.id += 1
-        self.id = Vacancy.id
+        self.id = query_id + '_' + str(Vacancy.id)
         self.name = name
         self.employer = employer
         self.area = area
@@ -22,7 +23,7 @@ class Vacancy:
         self.date = date
         self.type = type_vac
         self.salary_print = ''
-        Vacancy.add_vacancy_to_list(self)
+        Vacancy.add_vacancy_to_sorted_list(self)
 
     @property
     def salary(self):
@@ -32,8 +33,34 @@ class Vacancy:
     def salary(self, salary_value):
         self._salary = salary_value
 
+    def get_vacancy_list(self):
+        """
+        Метод преобразует отсортированный по зарплате словарь в общий список всех вакансий
+        """
+
+        list_ = []
+        for currency in self.vacancy_lists['with_salary_to']['на руки']:
+            for item in self.vacancy_lists['with_salary_to']['на руки'][currency]:
+                list_.append(item)
+        for currency in self.vacancy_lists['with_salary_to']['до вычета налогов']:
+            for item in self.vacancy_lists['with_salary_to']['до вычета налогов'][currency]:
+                list_.append(item)
+        for currency in self.vacancy_lists['with_salary_from']['на руки']:
+            for item in self.vacancy_lists['with_salary_from']['на руки'][currency]:
+                list_.append(item)
+        for currency in self.vacancy_lists['with_salary_from']['до вычета налогов']:
+            for item in self.vacancy_lists['with_salary_from']['до вычета налогов'][currency]:
+                list_.append(item)
+        for item in self.vacancy_lists['without_salary']:
+            list_.append(item)
+        return list_
+
     @classmethod
-    def add_vacancy_to_list(cls, self):
+    def add_vacancy_to_sorted_list(cls, self):
+        """
+        Метод позволяет добавить вакансию в отсортированный по зарплате словарь
+        """
+
         if not self._salary:
             cls.vacancy_lists['without_salary'].append(self)
             self.salary_print = "Зарплата не определена"
@@ -68,11 +95,9 @@ class Vacancy:
         return (
             f"Вакансия {self.id}: {self.name}\n {self.employer['name']}\n {self.area['name']}\n {self.salary_print}\n"
             f"{self.experience['name']}\n{self.snippet['requirement']}\n{self.snippet['responsibility']}\n"
-            f"{self.schedule['name']}\n {professional_roles_str} {self.employer['vacancies_url']}\nдата публикации {self.date}\n"
+            f"{self.schedule['name']}\n {professional_roles_str} {self.employer['vacancies_url']}\n"
+            f"дата публикации {self.date}\n"
             f"тип вакансии {self.type['name']}\n\n")
-
-#    def __repr__(self):
-#        return f"<{self.__class__}, {self.__dict__}>"
 
     def __dict__(self):
         return {
