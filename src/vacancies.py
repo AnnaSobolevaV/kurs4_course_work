@@ -3,7 +3,18 @@ class Vacancy:
     """
     Класс для работы с вакансиями
     """
-
+    query_id: str
+    name: str
+    employer: dict
+    area: dict
+    __salary: dict
+    snippet: dict
+    schedule: dict
+    professional_roles: dict
+    experience: dict
+    date: str
+    type: dict
+    salary_print: str
     id = 0
     vacancy_lists = {'without_salary': [], 'with_salary_to': {'до вычета налогов': {}, 'на руки': {}},
                      'with_salary_from': {'до вычета налогов': {}, 'на руки': {}}}
@@ -15,7 +26,7 @@ class Vacancy:
         self.name = name
         self.employer = employer
         self.area = area
-        self._salary = salary
+        self.__salary = salary
         self.snippet = snippet
         self.schedule = schedule
         self.professional_roles = professional_roles
@@ -27,11 +38,11 @@ class Vacancy:
 
     @property
     def salary(self):
-        return self._salary
+        return self.__salary
 
     @salary.setter
     def salary(self, salary_value):
-        self._salary = salary_value
+        self.__salary = salary_value
 
     def get_vacancy_list(self):
         """
@@ -61,32 +72,32 @@ class Vacancy:
         Метод позволяет добавить вакансию в отсортированный по зарплате словарь
         """
 
-        if not self._salary:
+        if not self.__salary:
             cls.vacancy_lists['without_salary'].append(self)
             self.salary_print = "Зарплата не определена"
         else:
-            if self._salary["gross"]:
+            if self.__salary["gross"]:
                 gross = "до вычета налогов"
             else:
                 gross = "на руки"
-            if not self._salary['from']:
-                if self._salary['to']:
-                    self.salary_print = f'Зарплата до: {self._salary['to']}, {self._salary['currency']}, {gross}'
-                    cls.vacancy_lists['with_salary_to'][gross].setdefault(self._salary['currency'], [])
-                    cls.vacancy_lists['with_salary_to'][gross][self._salary['currency']].append(self)
-                    cls.vacancy_lists['with_salary_to'][gross][self._salary['currency']].sort(reverse=True)
-            elif not self._salary['to']:
-                self.salary_print = f'Зарплата от: {self._salary['from']}, {self._salary['currency']}, {gross}'
-                cls.vacancy_lists['with_salary_from'][gross].setdefault(self._salary['currency'], [])
-                cls.vacancy_lists['with_salary_from'][gross][self._salary['currency']].append(self)
-                cls.vacancy_lists['with_salary_from'][gross][self._salary['currency']].sort(reverse=True)
+            if not self.__salary['from']:
+                if self.__salary['to']:
+                    self.salary_print = f'Зарплата до: {self.__salary['to']}, {self.__salary['currency']}, {gross}'
+                    cls.vacancy_lists['with_salary_to'][gross].setdefault(self.__salary['currency'], [])
+                    cls.vacancy_lists['with_salary_to'][gross][self.__salary['currency']].append(self)
+                    cls.vacancy_lists['with_salary_to'][gross][self.__salary['currency']].sort(reverse=True)
+            elif not self.__salary['to']:
+                self.salary_print = f'Зарплата от: {self.__salary['from']}, {self.__salary['currency']}, {gross}'
+                cls.vacancy_lists['with_salary_from'][gross].setdefault(self.__salary['currency'], [])
+                cls.vacancy_lists['with_salary_from'][gross][self.__salary['currency']].append(self)
+                cls.vacancy_lists['with_salary_from'][gross][self.__salary['currency']].sort(reverse=True)
 
             else:
-                self.salary_print = (f'Зарплата от: {self._salary['from']}  до: {self._salary['to']}, '
-                                     f'{self._salary['currency']}, {gross}')
-                cls.vacancy_lists['with_salary_to'][gross].setdefault(self._salary['currency'], [])
-                cls.vacancy_lists['with_salary_to'][gross][self._salary['currency']].append(self)
-                cls.vacancy_lists['with_salary_to'][gross][self._salary['currency']].sort(reverse=True)
+                self.salary_print = (f'Зарплата от: {self.__salary['from']}  до: {self.__salary['to']}, '
+                                     f'{self.__salary['currency']}, {gross}')
+                cls.vacancy_lists['with_salary_to'][gross].setdefault(self.__salary['currency'], [])
+                cls.vacancy_lists['with_salary_to'][gross][self.__salary['currency']].append(self)
+                cls.vacancy_lists['with_salary_to'][gross][self.__salary['currency']].sort(reverse=True)
 
     def __str__(self):
         professional_roles_str = ''
@@ -105,7 +116,7 @@ class Vacancy:
             "name": self.name,
             "employer": self.employer,
             "area": self.area,
-            "salary": self._salary,
+            "salary": self.__salary,
             "snippet": self.snippet,
             "schedule": self.schedule,
             "professional_roles": self.professional_roles,
