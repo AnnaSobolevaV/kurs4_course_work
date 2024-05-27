@@ -101,9 +101,9 @@ class ConnectorJson(Connector):
         data = self.load_data()
         for item in list_:
             if self.there_is_item_in_list(item, data):
-                print(f'Вакансия с id {item.id} уже присутствует в файле')
+                print(f"Вакансия с id {item.id} уже присутствует в файле")
             else:
-                print(f'Вакансия с id {item.id} добавлена в файл')
+                print(f"Вакансия с id {item.id} добавлена в файл")
                 data.extend([item.__dict__()])
 
         with open(self.file, 'w', encoding='utf-8') as f:
@@ -118,7 +118,7 @@ class ConnectorJson(Connector):
         data = self.load_data()
         for item in data:
             if item['id'] in list_:
-                print(f'Вакансия с id {item['id']} удалена из файла')
+                print(f"Вакансия с id {item['id']} удалена из файла")
                 list_.remove(item['id'])
             else:
                 data_new.append(item)

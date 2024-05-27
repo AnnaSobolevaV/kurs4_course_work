@@ -1,5 +1,5 @@
 from src.parser import HH
-from data.definitions import strings_for_print, file_worker_hh, user_choice_default, user_file_json
+from data.definitions import strings_for_print, user_choice_default, user_file_json
 from src.my_exeption import RequestErrorException
 from src.vacancies import Vacancy
 from src.connector import ConnectorJson
@@ -114,14 +114,14 @@ def main():
         if user_request:
             if user_request['name'] == 'request':
                 if user_request['site'] == 1:
-                    parser_hh = HH(file_worker_hh)
+                    parser_hh = HH()
                     try:
                         area_id = None
                         area_id_lst = []
                         area_lst = parser_hh.get_region_lst(user_request['region'])
                         for area in area_lst:
                             area_id_lst.append(area['id'])
-                            print(f'id {area['id']} {area['text']}')
+                            print(f"id {area['id']} {area['text']}")
                         print('Введите id региона:')
                         while not area_id:
                             area_id = str(input(strings_for_print["choice"]))
@@ -135,11 +135,11 @@ def main():
                     except RequestErrorException as e:
                         print('RequestError ', e, '\n')
                     else:
-                        parser_hh.save_list_in_file()
                         print(f'Получено  {len(parser_hh)} вакансий (на hh.ru ограничение в 2000 вакансий на один '
                               f'запрос)')
                         for item in parser_hh.vacancies:
-                            vacancy = Vacancy(parser_hh.id, item['name'], item['employer'], item['area'], item['salary'],
+                            vacancy = Vacancy(parser_hh.id, item['name'], item['employer'],
+                                              item['area'], item['salary'],
                                               item['snippet'],
                                               item['schedule'], item['professional_roles'], item['experience'],
                                               item['published_at'], item['type'])
@@ -154,7 +154,7 @@ def main():
                 if user_request['only_with_salary']:
                     for currency in vacancy.vacancy_lists['with_salary_to']['на руки']:
                         print(f'---"Зарплата до", "на руки", "{currency}" - всего найдено: ',
-                              len(vacancy.vacancy_lists['with_salary_to']['на руки'][currency]))
+                              len(vacancy.vacancy_lists["with_salary_to"]["на руки"][currency]))
                         only_with_salary += len(vacancy.vacancy_lists['with_salary_to']['на руки'][currency])
                         numerate = 0
                         for item in vacancy.vacancy_lists['with_salary_to']['на руки'][currency]:
@@ -166,7 +166,7 @@ def main():
 
                     for currency in vacancy.vacancy_lists['with_salary_to']['до вычета налогов']:
                         print(f'---"Зарплата до", "до вычета налогов",  "{currency}" - всего найдено: ',
-                              len(vacancy.vacancy_lists['with_salary_to']['до вычета налогов'][currency]))
+                              len(vacancy.vacancy_lists["with_salary_to"]["до вычета налогов"][currency]))
                         only_with_salary += len(vacancy.vacancy_lists['with_salary_to']['до вычета налогов'][currency])
                         numerate = 0
                         for item in vacancy.vacancy_lists['with_salary_to']['до вычета налогов'][currency]:
@@ -226,7 +226,7 @@ def main():
                                 print(f'Вакансия с id {item.id} добавлена в список')
                                 user_request['add_vacancy_list'].remove(item.id)
                         if user_request['add_vacancy_list']:
-                            print(f'Вакансии с id {user_request['add_vacancy_list']} НЕ добавлены в список')
+                            print(f"Вакансии с id {user_request['add_vacancy_list']} НЕ добавлены в список")
 
                     if user_request['rewrite_file']:
                         connector_json.write_list_in_file(list_to_add)
@@ -241,9 +241,9 @@ def main():
                 if user_request['file_type'] == 1:
                     connector_json.del_list_from_file(user_request['del_vacancy_lst'])
                 if user_request['file_type'] == 2:
-                    print('Function is not implemented')
+                    print('-------- Упс! Функция еще не реализована')
                 if user_request['file_type'] == 3:
-                    print('Function is not implemented')
+                    print('-------- Упс! Функция еще не реализована')
 
 
 if __name__ == '__main__':

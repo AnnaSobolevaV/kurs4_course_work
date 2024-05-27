@@ -10,9 +10,6 @@ class Parser(ABC):
     Абстрактный класс для работы с API различных сайтов по поиску вакансий
     """
 
-    def __init__(self, file_worker):
-        self.file_worker = file_worker
-
     @abstractmethod
     def load_vacancies(self, keyword):
         pass
@@ -42,17 +39,16 @@ class HH(Parser):
     """
     id = 0
 
-    def __init__(self, file_worker):
+    def __init__(self):
         HH.id += 1
         self.id = 'queryHH_' + str(HH.id)
         self.url_area = 'https://api.hh.ru/suggests/areas'
         self.url = 'https://api.hh.ru/vacancies'
         self.params = {"text": "",
-                       'area': '',
-                       'period': 7,
+                       "area": "",
+                       "period": 7,
                        "page": 0, "per_page": 100}
         self.__vacancies = []
-        super().__init__(file_worker)
 
     def __repr__(self):
         return f"<{self.__class__}, {self.__dict__}>"
@@ -66,10 +62,6 @@ class HH(Parser):
         for vacancy in self.__vacancies:
             vacancies_lst.append(vacancy)
         return vacancies_lst
-
-    def save_list_in_file(self):
-        with open(self.file_worker, 'w', encoding='utf-8') as f:
-            json.dump(self.vacancies, f, ensure_ascii=False, indent=4)
 
     def get_region_lst(self, region_name):
         param = {"text": region_name}
