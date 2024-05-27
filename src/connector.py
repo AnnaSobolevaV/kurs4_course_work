@@ -5,7 +5,10 @@ import json
 class Connector(ABC):
     """
     Абстрактный класс для работы с хранилищами данных разного типа
+    Атрибут:
+    file: str - путь и имя файла
     """
+    file: str
 
     def __init__(self, file):
         self.file = file
@@ -42,7 +45,19 @@ class Connector(ABC):
 class ConnectorJson(Connector):
     """
     Класс для взаимодействия с файлами в формате json
+
+    Атрибут:
+        file: str - путь и имя файла
+    Методы:
+        class_to_dict(obj): Метод позволяет преобразовывать объект в словарь,
+                            для дальнейшего преобразования его в формат json
+        load_data(self): Загружает данные из файла json
+        write_list_in_file(self, list_): Перезаписывает файл новыми данными в формате json
+        there_is_item_in_list(item_from_list_, data):Проверяет есть ли уже в списке добавляемые данные
+        add_list_in_file(self, list_): Добавляет список в файл json
+        del_list_from_file(self, list_): Удаляет данные из файла json
     """
+    file: str
 
     def __init__(self, file_json):
         super().__init__(file_json)
@@ -52,6 +67,9 @@ class ConnectorJson(Connector):
 
     @staticmethod
     def class_to_dict(obj):
+        """
+        Метод позволяет преобразовывать объект в словарь, для дальнейшего преобразования его в формат json
+        """
         obj_dict = obj.__dict__()
         return obj_dict
 

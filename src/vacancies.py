@@ -1,7 +1,33 @@
-
 class Vacancy:
     """
-    Класс для работы с вакансиями
+    --Класс для работы с вакансиями:
+
+    Атрибуты:
+
+        Vacancy.id: int             - номер вакансии - классовый атрибут;
+        vacancy_lists: dict         - словарь списков вакансий, отсортированный по зарплате;
+        query_id: str               - id запроса, в котором получена вакансия;
+        id: str                     - id вакансии;
+        name: str                   - название вакансии;
+        employer: dict              - работодатель;
+        area: dict                  - место нахождение работодателя;
+        __salary: dict              - зарплата;
+        snippet: dict               - требования и обязанности;
+        schedule: dict              - график работы;
+        professional_roles: dict    - профессиональные роли;
+        experience: dict            - опыт;
+        date: str                   - дата публикации вакансии;
+        type: dict                  - тип вакансии;
+        salary_print: str           - зарплата для вывода на печать;
+
+    Методы:
+        get_vacancy_list(self) - Метод преобразует отсортированный по зарплате словарь в общий список всех вакансий;
+        add_vacancy_to_sorted_list(cls, self) - классовый метод - Метод позволяет добавить вакансию
+                                                в отсортированный по зарплате словарь;
+        __str__(self): Метод преобразует Вакансию в строку;
+        __dict__(self): Метод преобразует Вакансию в словарь;
+        __lt__(self, other): Метод сравнивает вакансии по зарплате, по знаку "меньше"
+        __eq__(self, other): Метод сравнивает вакансии по зарплате, на равенство
     """
     query_id: str
     name: str
@@ -16,8 +42,17 @@ class Vacancy:
     type: dict
     salary_print: str
     id = 0
-    vacancy_lists = {'without_salary': [], 'with_salary_to': {'до вычета налогов': {}, 'на руки': {}},
-                     'with_salary_from': {'до вычета налогов': {}, 'на руки': {}}}
+    vacancy_lists = {
+        'without_salary': [],
+        'with_salary_to': {
+            'до вычета налогов': {},
+            'на руки': {}
+        },
+        'with_salary_from': {
+            'до вычета налогов': {},
+            'на руки': {}
+        }
+    }
 
     def __init__(self, query_id, name, employer, area, salary, snippet, schedule, professional_roles, experience,
                  date, type_vac):
@@ -100,6 +135,10 @@ class Vacancy:
                 cls.vacancy_lists['with_salary_to'][gross][self.__salary['currency']].sort(reverse=True)
 
     def __str__(self):
+        """
+        Метод преобразует Вакансию в строку
+        """
+
         professional_roles_str = ''
         for index in range(len(self.professional_roles)):
             professional_roles_str += self.professional_roles[index]['name'] + '\n'
@@ -111,6 +150,9 @@ class Vacancy:
             f"тип вакансии {self.type['name']}\n\n")
 
     def __dict__(self):
+        """
+        Метод преобразует Вакансию в словарь
+        """
         return {
             "id": self.id,
             "name": self.name,
@@ -127,6 +169,9 @@ class Vacancy:
         }
 
     def __lt__(self, other):
+        """
+        Метод сравнивает вакансии по зарплате, по знаку "меньше"
+        """
         if self.salary['to'] and other.salary['to'] and self.salary['from'] and other.salary['from']:
             if self.salary['to'] < other.salary['to'] or (
                     self.salary['to'] == other.salary['to'] and self.salary['from'] < other.salary['from']):
@@ -155,6 +200,9 @@ class Vacancy:
                 return False
 
     def __eq__(self, other):
+        """
+        Метод сравнивает вакансии по зарплате, на равенство
+        """
         if self.salary['from'] == other.salary['from'] and self.salary['to'] == other.salary['to']:
             return True
         else:
